@@ -33,8 +33,8 @@ A full-stack real-time invoice management dashboard. When a new invoice is added
 
 - 📡 **Real-Time Updates** — New invoices appear instantly on all connected browser tabs via Socket.io, no refresh needed
 - ➕ **Add Invoices** — Submit invoices with vendor name, amount, and status via a clean form
-- 🔄 **Update Status Inline** — Change invoice status (Pending → Paid → Rejected) directly from the table row; updates broadcast to all clients in real time
-- 🗑️ **Delete Invoices** — Remove invoices instantly; deletion reflects across all connected clients via WebSocket
+- 🔄 **Update Status Inline** — Change invoice status (Pending → Paid → Rejected) directly from the table row; Real-time invoice status updates with password-protected authorization.
+- 🗑️ **Delete Invoices** — Password-protected invoice deletion synchronized across all connected clients in real time.
 - 🔍 **Search by Vendor** — Filter invoices by vendor name instantly on the frontend with no extra API call
 - 🟢 **Connection Status** — Live indicator showing whether the WebSocket is Connected or Disconnected
 - 💾 **Persistent Storage** — Data stored in MongoDB Atlas, survives server restarts
