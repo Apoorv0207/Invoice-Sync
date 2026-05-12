@@ -6,7 +6,7 @@ A full-stack real-time invoice management dashboard. When a new invoice is added
 
 ## 🔗 Links
 
-- **Live Demo:** `https://your-live-demo-link.vercel.app` ← replace this
+- **Live Demo:** https://invoice-sync-frontend.vercel.app/
 - **GitHub:** https://github.com/Apoorv0207/Invoice-Sync
 
 ---
