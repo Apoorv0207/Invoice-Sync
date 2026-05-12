@@ -12,13 +12,13 @@ const httpServer = http.createServer(app);
 // Socket.io server attached to the same HTTP server
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173", // Vite default port
+    origin: "https://invoice-sync-frontend.vercel.app/", // Vite default port
     methods: ["GET", "POST"],
   },
 });
 
 // Middleware
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: "https://invoice-sync-frontend.vercel.app/" }));
 app.use(express.json());
 
 // Routes — pass io into routes so POST can emit events
