@@ -4,8 +4,8 @@ import InvoiceRow from "./InvoiceRow";
 
 interface Props {
   invoices: Invoice[];
-  onDelete: (id: string) => void;
-  onStatusChange: (id: string, status: "pending" | "paid" | "rejected") => void;
+  onDelete: (id: string, password: string) => Promise<boolean>;
+  onStatusChange: (id: string, status: "pending" | "paid" | "rejected", password: string) => Promise<boolean>;
 }
 
 const InvoiceTable = ({ invoices, onDelete, onStatusChange }: Props) => {

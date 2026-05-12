@@ -9,7 +9,6 @@ import ConnectionStatus from "./components/ConnectionStatus";
 const App = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
 
-  // Fetch initial invoices on mount
   useEffect(() => {
     fetch("https://invoice-sync-backend.onrender.com/api/invoices")
       .then((res) => res.json())
@@ -17,19 +16,15 @@ const App = () => {
       .catch((err) => console.error("Failed to fetch invoices:", err));
   }, []);
 
-  // Socket listeners for real-time events
   useEffect(() => {
-    // New invoice added by any client
     const onInvoiceAdded = (invoice: Invoice) => {
       setInvoices((prev) => [{ ...invoice, isNew: true }, ...prev]);
     };
 
-    // Invoice deleted by any client
     const onInvoiceDeleted = (id: string) => {
       setInvoices((prev) => prev.filter((inv) => inv._id !== id));
     };
 
-    // Invoice status updated by any client
     const onInvoiceUpdated = (updated: Invoice) => {
       setInvoices((prev) =>
         prev.map((inv) => (inv._id === updated._id ? updated : inv))
@@ -47,37 +42,43 @@ const App = () => {
     };
   }, []);
 
-  const handleDelete = async (id: string) => {
+  // Returns true if password was correct, false if not
+  const handleDelete = async (id: string, password: string): Promise<boolean> => {
     try {
-      await fetch(`https://invoice-sync-backend.onrender.com/api/invoices/${id}`, {
+      const res = await fetch(`https://invoice-sync-backend.onrender.com/api/invoices/${id}`, {
         method: "DELETE",
+        headers: { "x-admin-password": password },
       });
-      // Socket will handle UI update via invoice_deleted event
-    } catch (err) {
-      console.error("Failed to delete invoice:", err);
+      return res.ok;
+    } catch {
+      return false;
     }
   };
 
   const handleStatusChange = async (
     id: string,
-    status: "pending" | "paid" | "rejected"
-  ) => {
+    status: "pending" | "paid" | "rejected",
+    password: string
+  ): Promise<boolean> => {
     try {
-      await fetch(`https://invoice-sync-backend.onrender.com/api/invoices/${id}/status`, {
+      const res = await fetch(`https://invoice-sync-backend.onrender.com/api/invoices/${id}/status`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": password,
+        },
         body: JSON.stringify({ status }),
       });
-      // Socket will handle UI update via invoice_updated event
-    } catch (err) {
-      console.error("Failed to update status:", err);
+      return res.ok;
+    } catch {
+      return false;
     }
   };
 
   return (
     <div className="app">
       <div className="app-header">
-        <h1>Invoice Sync</h1>
+        <h1>Invoice Dashboard</h1>
         <ConnectionStatus />
       </div>
       <AddInvoiceForm />

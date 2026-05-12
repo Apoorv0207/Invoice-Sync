@@ -1,11 +1,23 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import type { Server } from "socket.io";
 import Invoice from "./invoice.model";
+
+// Middleware — checks x-admin-password header
+const requirePassword = (req: Request, res: Response, next: NextFunction): void => {
+  const provided = req.headers["x-admin-password"];
+  const actual = process.env.ADMIN_PASSWORD;
+
+  if (!provided || provided !== actual) {
+    res.status(401).json({ message: "Incorrect password" });
+    return;
+  }
+  next();
+};
 
 const createInvoiceRouter = (io: Server): Router => {
   const router = Router();
 
-  // GET /api/invoices - return all invoices, newest first
+  // GET — no password needed
   router.get("/", async (_req: Request, res: Response) => {
     try {
       const invoices = await Invoice.find().sort({ createdAt: -1 });
@@ -16,7 +28,7 @@ const createInvoiceRouter = (io: Server): Router => {
     }
   });
 
-  // POST /api/invoices - create new invoice and broadcast
+  // POST — no password needed
   router.post("/", async (req: Request, res: Response) => {
     try {
       const { vendorName, amount, status } = req.body as {
@@ -39,8 +51,8 @@ const createInvoiceRouter = (io: Server): Router => {
     }
   });
 
-  // DELETE /api/invoices/:id - delete invoice and broadcast
-  router.delete("/:id", async (req: Request, res: Response) => {
+  // DELETE — password protected
+  router.delete("/:id", requirePassword, async (req: Request, res: Response) => {
     try {
       const deleted = await Invoice.findByIdAndDelete(req.params["id"]);
 
@@ -57,8 +69,8 @@ const createInvoiceRouter = (io: Server): Router => {
     }
   });
 
-  // PATCH /api/invoices/:id/status - update status and broadcast
-  router.patch("/:id/status", async (req: Request, res: Response) => {
+  // PATCH — password protected
+  router.patch("/:id/status", requirePassword, async (req: Request, res: Response) => {
     try {
       const { status } = req.body as {
         status: "pending" | "paid" | "rejected";
