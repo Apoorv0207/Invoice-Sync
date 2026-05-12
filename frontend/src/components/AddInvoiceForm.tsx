@@ -26,7 +26,7 @@ const AddInvoiceForm = () => {
 
     setLoading(true);
     try {
-      await fetch("http://localhost:5000/api/invoices", {
+      await fetch("https://invoice-sync-backend.onrender.com/api/invoices", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

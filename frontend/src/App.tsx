@@ -11,7 +11,7 @@ const App = () => {
 
   // Fetch initial invoices on mount
   useEffect(() => {
-    fetch("http://localhost:5000/api/invoices")
+    fetch("https://invoice-sync-backend.onrender.com/api/invoices")
       .then((res) => res.json())
       .then((data: Invoice[]) => setInvoices(data))
       .catch((err) => console.error("Failed to fetch invoices:", err));
@@ -49,7 +49,7 @@ const App = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await fetch(`http://localhost:5000/api/invoices/${id}`, {
+      await fetch(`https://invoice-sync-backend.onrender.com/api/invoices/${id}`, {
         method: "DELETE",
       });
       // Socket will handle UI update via invoice_deleted event
@@ -63,7 +63,7 @@ const App = () => {
     status: "pending" | "paid" | "rejected"
   ) => {
     try {
-      await fetch(`http://localhost:5000/api/invoices/${id}/status`, {
+      await fetch(`https://invoice-sync-backend.onrender.com/api/invoices/${id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
